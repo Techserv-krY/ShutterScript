@@ -116,11 +116,25 @@ switch ($_IPS['SENDER']) {
 				case ENO_25: {
 				//	if(GetValueBoolean(37212 /*[Eltako FSB61\ShutterOC]*/)) == true {
 					if(GetValueBoolean(37212 /*[Eltako FSB61\ShutterOC]*/)) {
+						if(GetValueBoolean(15897 /*[Eltako FSB61\Shutter50]*/)) {
+							ENO_ShutterMoveDownEx($ENO_ID, $DOWN25);
+							SetValueBoolean(17347 /*[Eltako FSB61\Shutter25]*/,true);
+							SetValueBoolean(15897 /*[Eltako FSB61\Shutter50]*/,false);
+							SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,false);
+							}
+						break;
+						if(GetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/)) {
+							ENO_ShutterMoveDownEx($ENO_ID, $DOWN50);
+							SetValueBoolean(17347 /*[Eltako FSB61\Shutter25]*/,true);
+							SetValueBoolean(15897 /*[Eltako FSB61\Shutter50]*/,false);
+							SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,false);
+							}
+						break;
 						ENO_ShutterMoveDownEx($ENO_ID, $DOWN75);
 						SetValueBoolean(17347 /*[Eltako FSB61\Shutter25]*/,true);
 						SetValueBoolean(15897 /*[Eltako FSB61\Shutter50]*/,false);
 						SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,false);
-						}
+					}
 					else {
 						ENO_ShutterMoveUpEx($ENO_ID, $UP25);
 						SetValueBoolean(17347 /*[Eltako FSB61\Shutter25]*/,true);
