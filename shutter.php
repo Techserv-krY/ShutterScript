@@ -1,5 +1,8 @@
 <?
-print_r($_IPS);
+// print for debuging
+// print_r($_IPS);
+
+// Definition Buttons WebFront
 define("ENO_UP", 0);
 
 define("ENO_STOP", 1);
@@ -22,6 +25,8 @@ define("ENO_L75", 9);
 
 define("ENO_L100", 10);
 
+
+// Aktiv Button Glow WebFront
 if($_IPS["SENDER"] == "WebFront")
 {
 	SetValue($_IPS["VARIABLE"], $_IPS["VALUE"]);
@@ -33,7 +38,7 @@ $jalousien=array(
 
 	array(46612 /*[Eltako FSB61]*/,56,55,3.3,3.3,"test"),
 );
-
+// print for debuging
 //	print_r($jalousien);
 
 
@@ -62,11 +67,11 @@ $jalousien=array(
   $DOWN25 = $ENO_DOWN_T - $ENO_DOWN_T * 75 / 100;
   $DOWN50 = $ENO_DOWN_T - $ENO_DOWN_T * 50 / 100;
   $DOWN75 = $ENO_DOWN_T - $ENO_DOWN_T * 25 / 100;
-  // if Shutter Down - Time Calculator  for Slats Position 25%, 50% and 75%  
+ // if Shutter Down - Time Calculator  for Slats Position 25%, 50% and 75%  
   $LUP25 = $ENO_LUP_T - $ENO_LUP_T * 75 / 100;
   $LUP50 = $ENO_LUP_T - $ENO_LUP_T * 50 / 100;
   $LUP75 = $ENO_LUP_T - $ENO_LUP_T * 25 / 100;
-  // if Shutter Up - Time Calculator  for Slats Position 25%, 50% and 75% 
+ // if Shutter Up - Time Calculator  for Slats Position 25%, 50% and 75% 
   $LDOWN25 = $ENO_LUP_T - $ENO_LUP_T * 75 / 100;
   $LDOWN25 = $ENO_LUP_T - $ENO_LUP_T * 50 / 100;
   $LDOWN25 = $ENO_LUP_T - $ENO_LUP_T * 25 / 100;
@@ -80,7 +85,8 @@ switch ($_IPS['SENDER']) {
 
 		switch($_IPS['VALUE']) {
 	
-	// Shutter OC
+
+// ShutterMove.OC
 				case ENO_STOP:
 				ENO_ShutterStop($ENO_ID);
 				SetValueBoolean(46916 /*[Eltako FSB61\ShutterStop]*/,true);
@@ -98,6 +104,7 @@ switch ($_IPS['SENDER']) {
 				SetValueBoolean(46916 /*[Eltako FSB61\ShutterStop]*/,false);
 				break;
 
+// ShutterMove
 				case ENO_25:
 				if(GetValueBoolean(37212 /*[Eltako FSB61\ShutterOC]*/,false)) {
 				ENO_ShutterMoveUpEx($ENO_ID, $UP25);
@@ -145,11 +152,12 @@ switch ($_IPS['SENDER']) {
 				break;
 				}
 				break;
-				 
-				case ENO_LAM50:
-				ENO_ShutterMoveUpEx($ENO_ID, $test2);
-				SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,true);
-				break;
+
+// ShutterSlates				 
+			//	case ENO_LAM50:
+			//	ENO_ShutterMoveUpEx($ENO_ID, $test2);
+			//	SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,true);
+			//	break;
 			}
 		
 		break;
