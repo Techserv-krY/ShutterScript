@@ -1,7 +1,7 @@
 <?
 // print for debuging
 // print_r($_IPS);
-
+//
 // Definition Buttons WebFront
 define("ENO_UP", 0);
 
