@@ -90,18 +90,27 @@ switch ($_IPS['SENDER']) {
 				case ENO_STOP:
 				ENO_ShutterStop($ENO_ID);
 				SetValueBoolean(46916 /*[Eltako FSB61\ShutterStop]*/,true);
+				SetValueBoolean(17347 /*[Eltako FSB61\Shutter25]*/,false);
+				SetValueBoolean(15897 /*[Eltako FSB61\Shutter50]*/,false);
+				SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,false);
 				break;
 
 				case ENO_UP:
 				ENO_ShutterMoveUp($ENO_ID);
 				SetValueBoolean(37212 /*[Eltako FSB61\ShutterOC]*/,true);
 				SetValueBoolean(46916 /*[Eltako FSB61\ShutterStop]*/,false);
+				SetValueBoolean(17347 /*[Eltako FSB61\Shutter25]*/,false);
+				SetValueBoolean(15897 /*[Eltako FSB61\Shutter50]*/,false);
+				SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,false);
 				break;
 
 				case ENO_DOWN:
 				ENO_ShutterMoveDown($ENO_ID);
 				SetValueBoolean(37212 /*[Eltako FSB61\ShutterOC]*/,false);
 				SetValueBoolean(46916 /*[Eltako FSB61\ShutterStop]*/,false);
+				SetValueBoolean(17347 /*[Eltako FSB61\Shutter25]*/,false);
+				SetValueBoolean(15897 /*[Eltako FSB61\Shutter50]*/,false);
+				SetValueBoolean(56662 /*[Eltako FSB61\Shutter75]*/,false);
 				break;
 
 // ShutterMove
