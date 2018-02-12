@@ -108,6 +108,11 @@ switch ($_IPS['SENDER']) {
 					SetValueBoolean($Shutter25 ,false);
 					SetValueBoolean($Shutter50 ,false);
 					SetValueBoolean($Shutter75 ,false);
+						if($SC_DURATION > 999) {
+							TimerDelay($ENO_ID, $SC_DURATION, "AUF");
+							}
+							if($SC_DURATION > 0 and $SC_DURATION <= 999) {
+								IPS_Sleep($SC_DURATION);
 					break;
 				}
 				case ENO_DOWN: {
@@ -117,6 +122,11 @@ switch ($_IPS['SENDER']) {
 					SetValueBoolean($Shutter25 ,false);
 					SetValueBoolean($Shutter50 ,false);
 					SetValueBoolean($Shutter75 ,false);
+						if($SC_DURATION > 999) {
+							TimerDelay($SC_INSTANCE2, $SC_DURATION, "AB");
+							}
+							if($SC_DURATION > 0 and $SC_DURATION <= 999) {
+								IPS_Sleep($SC_DURATION);
 					break;
 				}
 
@@ -310,5 +320,69 @@ switch ($_IPS['SENDER']) {
 	}
 }
 }
+case "TimerEvent": //Script wurde von einem Ereignis aufgerufen
+
+IPS_SetEventActive($IPS_EVENT, false);    //Ereignis deaktivieren
+$timer=IPS_GetName($IPS_EVENT);
+$SCT_INSTANCE = intval(substr($timer,-5,5));
+$bus = substr($timer,0,-5);
+
+    switch ($bus)
+    {
+    case "AUF":
+    TMEX_F29_SetStrobe($SC_INSTANCE, true);
+    TMEX_F29_SetPort($SC_INSTANCE, 255);
+    break;
+
+    case "AB":
+    TMEX_F29_SetStrobe($SC_INSTANCE2, true);
+    TMEX_F29_SetPort($SC_INSTANCE2, 255);
+    break;
+    }
+
+break;
+}
+
+function TimerDelay($id, $time, $bus)
+{
+    global $IPS_SELF;
+    $sekunden=intval(substr($time, 0,-3));
+    $msekunden=substr($time, -3, 3);
+    $timerid = @IPS_GetObjectIDByName($id, $IPS_SELF);
+    if ($timerid ==0)
+    {
+    $newtimer = IPS_CreateEvent(1);
+    IPS_SetParent($newtimer, $IPS_SELF); //Aktuelles Skript aufrufen
+    IPS_SetName($newtimer, $id);
+    IPS_Sleep(intval($msekunden));
+    IPS_SetEventCyclic($newtimer, 0, 0, 0, 0, 1, $sekunden);
+    IPS_SetEventCyclicDateBounds($newtimer, 0, 0);
+    IPS_SetEventCyclicTimeBounds($newtimer, time(), 0);
+    IPS_SetEventActive($newtimer, true);    //Ereignis aktivieren
+    }
+   else
+    {
+    IPS_Sleep(intval($msekunden));
+    IPS_SetEventCyclic($timerid, 0, 0, 0, 0, 1, $sekunden);
+    IPS_SetEventCyclicDateBounds($timerid, 0, 0);
+    IPS_SetEventCyclicTimeBounds($timerid, time(), 0);
+    IPS_SetEventActive($timerid, true);    //Ereignis aktivieren
+    }
+}
+
+function CreateVariableByName($id, $name, $type)
+{
+   global $IPS_SELF;
+   $vid = @IPS_GetVariableIDByName($name, $id);
+   if($vid===false)
+    {
+   $vid = IPS_CreateVariable($type);
+   IPS_SetParent($vid, $id);
+   IPS_SetName($vid, $name);
+   IPS_SetInfo($vid, "This Variable was created by Script #$IPS_SELF");
+   }
+   return $vid;
+}
+
 // echo $ENO_ID . "\n";
 ?>
