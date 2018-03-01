@@ -18,7 +18,7 @@ if($_IPS["SENDER"] == "WebFront"){
 	SetValue($_IPS["VARIABLE"], $_IPS["VALUE"]);
 	}
 $jalousien=array(
-//EDIT ---------!!!!!! array(OBJEKTID /*[Eltako FSB61]*/,FAHRZEIT NACH OBEN,FAHRZEIT NACH UNTEN,LAMELLEN AUF,LAMELLEN ZU,"NAME JALOUSIE"), !!!!!!
+//EDIT ---------!!!!!! array(OBJEKTID,FAHRZEIT NACH OBEN,FAHRZEIT NACH UNTEN,LAMELLEN AUF,LAMELLEN ZU,"NAME JALOUSIE"), !!!!!!
 	array(46612 /*[Eltako FSB61]*/,56,55,3.3,3.3,"Jalousie 2"),
 	);
 // print for debuging
@@ -34,11 +34,13 @@ $jalousien=array(
 	$ENO_NAME    = $jalousien[$x][5];
 	
 //EDIT ---------!!!!!! Boolean !!!!!!
-	$ShutterOC   = 37212 /*[Eltako FSB61\ShutterOC]*/;
-	$ShutterStop = 46916 /*[Eltako FSB61\ShutterStop]*/;
-	$Shutter25   = 17347 /*[Eltako FSB61\Shutter25]*/;
-	$Shutter50   = 15897 /*[Eltako FSB61\Shutter50]*/;
-	$Shutter75   = 56662 /*[Eltako FSB61\Shutter75]*/;
+	$ShutterOC       = 37212 /*[Eltako FSB61\ShutterOC]*/;
+	$ShutterStop     = 46916 /*[Eltako FSB61\ShutterStop]*/;
+	$Shutter25       = 17347 /*[Eltako FSB61\Shutter25]*/;
+	$Shutter50       = 15897 /*[Eltako FSB61\Shutter50]*/;
+	$Shutter75       = 56662 /*[Eltako FSB61\Shutter75]*/;
+	$ShutterMovement = 15301 /*[Eltako FSB61\ShutterMovement]*/;
+	$isRunning       = 55615 /*[Eltako FSB61\isRunning]*/
 	
 // if Shutter Down - Time Calculator  for Position 25%, 50% and 75%
 	$UP25 = $ENO_UP_T - $ENO_UP_T * 75 / 100;
@@ -77,6 +79,7 @@ switch ($_IPS['SENDER']) {
 					SetValueBoolean($Shutter25 ,false);
 					SetValueBoolean($Shutter50 ,false);
 					SetValueBoolean($Shutter75 ,false);
+					SetValueBoolean($isRunning ,true);
 					break;
 				}
 				case ENO_DOWN: {
@@ -86,6 +89,7 @@ switch ($_IPS['SENDER']) {
 					SetValueBoolean($Shutter25 ,false);
 					SetValueBoolean($Shutter50 ,false);
 					SetValueBoolean($Shutter75 ,false);
+					SetValueBoolean($isRunning ,true);
 					break;
 				}
 // ShutterMove
@@ -96,63 +100,79 @@ switch ($_IPS['SENDER']) {
 						}
 					elseif(GetValueBoolean($Shutter50)) {
 						ENO_ShutterMoveDownEx($ENO_ID, $DOWN25);
+						//	fals = letze befehlt war nach oben / true = letzter befehl nach unten
+						SetValueBoolean($ShutterMovement ,true);
 						}
 					elseif(GetValueBoolean($Shutter75)) {
 						ENO_ShutterMoveDownEx($ENO_ID, $DOWN50);
+						SetValueBoolean($ShutterMovement ,true);
 						}
 					elseif(GetValueBoolean($ShutterOC)) {
 						ENO_ShutterMoveDownEx($ENO_ID, $DOWN75);
+						SetValueBoolean($ShutterMovement ,true);
 						}
 						else {
 						ENO_ShutterMoveUpEx($ENO_ID, $UP25);
+						SetValueBoolean($ShutterMovement ,false);
 						}
 					SetValueBoolean($Shutter25 ,true);
 					SetValueBoolean($Shutter50 ,false);
 					SetValueBoolean($Shutter75 ,false);
+					SetValueBoolean($isRunning ,true);
 					break;
 				}
 				
 				case ENO_50: {
 					if(GetValueBoolean($Shutter25)) {
 						ENO_ShutterMoveUpEx($ENO_ID, $UP25);
+						SetValueBoolean($ShutterMovement ,false);
 						}
 					elseif(GetValueBoolean($Shutter50)) {
 						ENO_ShutterStop($ENO_ID);
 						}
 					elseif(GetValueBoolean($Shutter75)) {
 						ENO_ShutterMoveDownEx($ENO_ID, $DOWN25);
+						SetValueBoolean($ShutterMovement ,true);
 						}
 					elseif(GetValueBoolean($ShutterOC)) {
 						ENO_ShutterMoveDownEx($ENO_ID, $DOWN50);
+						SetValueBoolean($ShutterMovement ,true);
 						}
 						else {
 						ENO_ShutterMoveUpEx($ENO_ID, $UP50);
+						SetValueBoolean($ShutterMovement ,false);
 						}
 					SetValueBoolean($Shutter25 ,false);
 					SetValueBoolean($Shutter50 ,true);
 					SetValueBoolean($Shutter75 ,false);
+					SetValueBoolean($isRunning ,true);
 					break;
 				}
 				
 				case ENO_75: {
 					if(GetValueBoolean($Shutter25)) {
 						ENO_ShutterMoveUpEx($ENO_ID, $UP50);
+						SetValueBoolean($ShutterMovement ,false);
 						}
 					elseif(GetValueBoolean($Shutter50)) {
 						ENO_ShutterMoveUpEx($ENO_ID, $UP25);
+						SetValueBoolean($ShutterMovement ,false);
 						}
 					elseif(GetValueBoolean($Shutter75)) {
 						ENO_ShutterStop($ENO_ID);
 						}
 					elseif(GetValueBoolean($ShutterOC)) {
 						ENO_ShutterMoveDownEx($ENO_ID, $DOWN25);
+						SetValueBoolean($ShutterMovement ,true);
 						}
 						else {
 						ENO_ShutterMoveUpEx($ENO_ID, $UP75);
+						SetValueBoolean($ShutterMovement ,false);
 						}
 						SetValueBoolean($Shutter25 ,false);
 						SetValueBoolean($Shutter50 ,false);
 						SetValueBoolean($Shutter75 ,true);
+						SetValueBoolean($isRunning ,true);
 					break;
 				}
 				
@@ -165,6 +185,22 @@ switch ($_IPS['SENDER']) {
 	}
 }
 }
+
+
+$state = GetValueBoolean($isRunning); //Variable die geschaltet wird
+$timerscriptid = 32702 /*[Eltako FSB61\Time Elapsed\time elapsed]*/;
+$starttimeid = 37742 /*[Eltako FSB61\Start Time]*/;
+
+if($state)  // Beim Einschalten Timer setzten und Startzeit ablegen
+{
+    SetValue($starttimeid, time());
+     IPS_SetScriptTimer($timerscriptid, 1); //Skript alle 1s ausführen
+}
+else //Timer auschalten
+{
+    IPS_SetScriptTimer($timerscriptid, 0); // Timer löschen
+}  
+
 
 // echo $ENO_ID . "\n";
 ?>
