@@ -1,0 +1,29 @@
+<?
+$nowtime = time();
+$oldtime = GetValueInteger(37742 /*[Eltako FSB61\Start Time]*/); //Startzeit
+$count = time_elapsed($nowtime-$oldtime);
+$prozent = $count / 56 *100;
+$timeprint = round($count / 56 * 100)."% (".$count.")";
+SetValue(57245 /*[Eltako FSB61\Time Elapsed]*/, $timeprint);
+
+/** Output:
+Gerät eingeschaltet: 6d 15h 48m 19s
+**/
+
+
+ function time_elapsed($secs){
+    $bit = array(
+        'y' => $secs / 31556926 % 12,
+        'w' => $secs / 604800 % 52,
+        'd' => $secs / 86400 % 7,
+        'h' => $secs / 3600 % 24,
+        'm' => $secs / 60 % 60,
+        's' => $secs % 60
+        );
+        
+    foreach($bit as $k => $v)
+        if($v > 0)$ret[] = $v . $k;
+        
+    return join(' ', $ret);
+    }  
+?>
